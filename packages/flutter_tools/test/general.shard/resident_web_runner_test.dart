@@ -338,6 +338,36 @@ void main() {
     expect(testLogger.statusText, contains('SO IS THIS'));
   }));
 
+  test('Listens to extension events', () => testbed.run(() async {
+    fakeVmServiceHost = FakeVmServiceHost(requests: <VmServiceExpectation>[
+      ...kAttachExpectations,
+      FakeVmServiceStreamResponse(
+        streamId: 'Extension',
+        event: vm_service.Event(
+          timestamp: 0,
+          kind: vm_service.EventStreams.kExtension,
+          bytes: base64.encode(utf8.encode('Some other message')),
+        ),
+      ),
+    ]);
+
+    _setupMocks();
+    final Completer<DebugConnectionInfo> connectionInfoCompleter = Completer<DebugConnectionInfo>();
+    unawaited(residentWebRunner.run(
+      connectionInfoCompleter: connectionInfoCompleter,
+    ));
+    await connectionInfoCompleter.future;
+
+    print('Testlogger statusText:');
+    print(testLogger.statusText);
+    print(testLogger.errorText);
+    print(testLogger.eventText);
+    print(testLogger.traceText);
+
+//    expect(testLogger.statusText, contains('THIS MESSAGE IS IMPORTANT'));
+//    expect(testLogger.statusText, contains('SO IS THIS'));
+  }));
+
   test('Does not run main with --start-paused', () => testbed.run(() async {
     fakeVmServiceHost = FakeVmServiceHost(requests: kAttachExpectations.toList());
     residentWebRunner = DwdsWebRunnerFactory().createWebRunner(
