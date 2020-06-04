@@ -104,6 +104,7 @@ void main() {
       null,
       null,
       null,
+      null,
       mockVMService,
     );
 
@@ -122,6 +123,7 @@ void main() {
       null,
       null,
       reloadMethod,
+      null,
       null,
       mockVMService,
     );
@@ -142,6 +144,7 @@ void main() {
       mockDevice,
       null,
       null,
+      null,
       mockVMService,
     );
 
@@ -159,6 +162,7 @@ void main() {
       null,
       null,
       () async => 'hello',
+      null,
       mockVMService,
     );
 
@@ -167,9 +171,27 @@ void main() {
     Logger: () => BufferLogger.test()
   });
 
+  testUsingContext('VmService registers flutterPrintStructuredErrorLogMethod', () async {
+    final MockVMService mockVMService = MockVMService();
+    setUpVmService(
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      (vm_service.Event event) async => 'hello',
+      mockVMService,
+    );
+    verify(mockVMService.streamListen(vm_service.EventStreams.kExtension)).called(1);
+  }, overrides: <Type, Generator>{
+    Logger: () => BufferLogger.test()
+  });
+
   testUsingContext('VMService returns correct FlutterVersion', () async {
     final MockVMService mockVMService = MockVMService();
     setUpVmService(
+      null,
       null,
       null,
       null,
@@ -373,7 +395,12 @@ void main() {
 }
 
 class MockDevice extends Mock implements Device {}
-class MockVMService extends Mock implements vm_service.VmService {}
+class MockVMService extends Mock implements vm_service.VmService {
+  @override
+  StreamController<vm_service.Event> _getEventController(String eventName) {
+    return StreamController<vm_service.Event>();
+  }
+}
 class MockFlutterVersion extends Mock implements FlutterVersion {
   @override
   Map<String, Object> toJson() => const <String, Object>{'Mock': 'Version'};
