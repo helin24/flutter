@@ -938,7 +938,7 @@ mixin WidgetInspectorService {
         maxDescendentsTruncatableNode: 5,
       ).render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.error)).trimRight();
     } else {
-      errorJson['renderedErrorText'] = 'Another exception was thrown: ${details.summary}';
+      errorJson['renderedErrorText'] = 'Another exception was thrown: ${details.summary} (verifying this is from structured error)';
     }
 
     _errorsSinceReload += 1;

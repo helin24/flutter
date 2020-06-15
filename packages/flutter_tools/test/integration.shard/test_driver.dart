@@ -57,6 +57,7 @@ abstract class FlutterTestDriver {
   VmService _vmService;
   String get lastErrorInfo => _errorBuffer.toString();
   Stream<String> get stdout => _stdout.stream;
+  Stream<String> get stderr => _stderr.stream;
   int get vmServicePort => _vmServiceWsUri.port;
   bool get hasExited => _hasExited;
 
@@ -437,6 +438,7 @@ class FlutterRunTestDriver extends FlutterTestDriver {
     bool startPaused = false,
     bool pauseOnExceptions = false,
     bool chrome = false,
+    bool structuredErrors = false,
     File pidFile,
     String script,
   }) async {
@@ -451,6 +453,8 @@ class FlutterRunTestDriver extends FlutterTestDriver {
           ...<String>['chrome', '--web-run-headless', '--web-enable-expression-evaluation']
         else
           'flutter-tester',
+        if (structuredErrors)
+          '--dart-define=flutter.inspector.structuredErrors=true',
       ],
       withDebugger: withDebugger,
       startPaused: startPaused,
