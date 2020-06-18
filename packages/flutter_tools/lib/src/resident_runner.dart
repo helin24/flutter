@@ -894,11 +894,12 @@ abstract class ResidentRunner {
   }
 
   Future<void> exit() async {
+    print('in exit resident_runner');
     _exited = true;
     await shutdownDevtools();
     await stopEchoingDeviceLog();
     await preExit();
-    await exitApp();
+//    await exitApp();
   }
 
   Future<void> detach() async {

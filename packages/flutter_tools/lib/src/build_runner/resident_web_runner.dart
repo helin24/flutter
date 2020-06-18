@@ -667,7 +667,7 @@ class _ResidentWebRunner extends ResidentWebRunner {
       final WebDevFS webDevFS = device.devFS as WebDevFS;
       final bool useDebugExtension = device.device is WebServerDevice && debuggingOptions.startPaused;
       _connectionResult = await webDevFS.connect(useDebugExtension);
-      unawaited(_connectionResult.debugConnection.onDone.whenComplete(_cleanupAndExit));
+//      unawaited(_connectionResult.debugConnection.onDone.whenComplete(_cleanupAndExit));
 
       _stdOutSub = _vmService.onStdoutEvent.listen((vmservice.Event log) {
         final String message = utf8.decode(base64.decode(log.bytes));
@@ -713,11 +713,14 @@ class _ResidentWebRunner extends ResidentWebRunner {
       websocketUri = Uri.parse(_connectionResult.debugConnection.uri);
       // Always run main after connecting because start paused doesn't work yet.
       if (!debuggingOptions.startPaused || !supportsServiceProtocol) {
+        print('not startPaused');
         _connectionResult.appConnection.runMain();
       } else {
+        print('about to listen to debug event');
         StreamSubscription<void> resumeSub;
         resumeSub = _connectionResult.debugConnection.vmService.onDebugEvent
             .listen((vmservice.Event event) {
+          print('in debug event with type: '  + event.type);
           if (event.type == vmservice.EventKind.kResume) {
             _connectionResult.appConnection.runMain();
             resumeSub.cancel();
@@ -758,6 +761,7 @@ class _ResidentWebRunner extends ResidentWebRunner {
 
   @override
   Future<void> exitApp() async {
+    print('in resident_web_runner exitApp');
     await device.exitApps();
     appFinished();
   }

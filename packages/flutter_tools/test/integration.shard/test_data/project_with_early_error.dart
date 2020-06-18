@@ -34,6 +34,13 @@ class ProjectWithEarlyError extends Project {
     @override
     Widget build(BuildContext context) {
       throw FormatException();
+      return new MaterialApp( // BUILD BREAKPOINT
+        title: 'Flutter Demo',
+        home: new Container(
+          child: Text('Hello in here'),
+        ),
+      );
+
     }
   }
   ''';

@@ -442,6 +442,7 @@ class FlutterRunTestDriver extends FlutterTestDriver {
     File pidFile,
     String script,
   }) async {
+    print('in run');
     await _setupProcess(
       <String>[
         'run',
@@ -450,7 +451,7 @@ class FlutterRunTestDriver extends FlutterTestDriver {
         '--machine',
         '-d',
         if (chrome)
-          ...<String>['chrome', '--web-run-headless', '--web-enable-expression-evaluation']
+          ...<String>['chrome', '--web-enable-expression-evaluation'] // temp disabling headless
         else
           'flutter-tester',
         if (structuredErrors)
